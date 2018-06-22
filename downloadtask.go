@@ -157,15 +157,24 @@ func (self *DownloadTask) showProgress() {
 		select {
 		case <-self.done:
 			for _, p := range pbs {
-				p.Set(full)
-				p.Finish()
+				if !p.IsFinished() {
+					p.Set(full)
+					p.Finish()
+				}
 			}
 			pool.Stop()
 			return
 		case <-time.After(time.Millisecond * 200):
 			for i, w := range self.workers {
-				current := int(float64(full) * float64(w.downloaded) / float64(w.total))
-				pbs[i].Set(current)
+				if w.done {
+					if !pbs[i].IsFinished() {
+						pbs[i].Set(full)
+						pbs[i].Finish()
+					}
+				} else {
+					current := int(float64(full) * float64(w.downloaded) / float64(w.total))
+					pbs[i].Set(current)
+				}
 			}
 		}
 	}
