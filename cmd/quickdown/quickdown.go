@@ -1,4 +1,4 @@
-package quickdown
+package main
 
 import (
 	"flag"
