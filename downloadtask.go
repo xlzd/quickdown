@@ -114,8 +114,8 @@ func (self *DownloadTask) merge() {
 	}
 	defer out.Close()
 
-	for _, worker := range self.workers[1:] {
-		in, err := os.Open(worker.filename)
+	for _, w := range self.workers[1:] {
+		in, err := os.Open(w.filename)
 		if err != nil {
 			panic(err)
 		}
@@ -124,7 +124,7 @@ func (self *DownloadTask) merge() {
 		}
 		in.Close()
 		out.Sync()
-		os.Remove(worker.filename)
+		os.Remove(w.filename)
 	}
 }
 
@@ -179,8 +179,8 @@ func (self *DownloadTask) Download() {
 	}
 
 	self.initWorkers()
-	for _, worker := range self.workers {
-		go worker.run()
+	for _, w := range self.workers {
+		go w.run()
 	}
 
 	go self.showProgress()
