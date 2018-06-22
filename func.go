@@ -1,4 +1,4 @@
-package goquick
+package quickdown
 
 import (
 	"errors"
